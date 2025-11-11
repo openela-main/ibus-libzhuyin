@@ -1,15 +1,11 @@
-%global snapshot 0
-
 Name:       ibus-libzhuyin
 Version:    1.10.0
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    New Zhuyin engine based on libzhuyin for IBus
 License:    GPLv2+
 URL:        https://github.com/libzhuyin/ibus-libzhuyin
 Source0:    http://downloads.sourceforge.net/libzhuyin/ibus-libzhuyin/%{name}-%{version}.tar.gz
-%if %snapshot
-Patch0:     ibus-libzhuyin-1.10.x-HEAD.patch
-%endif
+Patch1:     ibus-libzhuyin-fixes-super-space.patch
 
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
@@ -35,9 +31,7 @@ based on libzhuyin for IBus.
 
 %prep
 %setup -q
-%if %snapshot
-%patch0 -p1 -b .head
-%endif
+%patch -P1 -p1 -b .space
 
 
 %build
@@ -71,6 +65,10 @@ based on libzhuyin for IBus.
 
 
 %changelog
+* Wed Aug 06 2025 Peng Wu  <pwu@redhat.com> - 1.10.0-5
+- Add ibus-libzhuyin-fixes-super-space.patch
+- Resolves: RHEL-106766
+
 * Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 1.10.0-4
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688

@@ -1,0 +1,84 @@
+commit d7f415b3c079108e134216377a2145fdfaf95a0d
+Author: Peng Wu <alexepico@gmail.com>
+Date:   Tue Jan 23 11:54:41 2024 +0800
+
+    Fix processKeyEvent methods
+
+Index: ibus-libzhuyin-1.10.0/src/ZYEditor.cc
+===================================================================
+--- ibus-libzhuyin-1.10.0.orig/src/ZYEditor.cc
++++ ibus-libzhuyin-1.10.0/src/ZYEditor.cc
+@@ -37,6 +37,9 @@ Editor::~Editor (void)
+ gboolean
+ Editor::processKeyEvent (guint keyval, guint keycode, guint modifiers)
+ {
++    if (modifiers & IBUS_MOD4_MASK)
++        return FALSE;
++
+     modifiers &= (IBUS_CONTROL_MASK |
+                   IBUS_MOD1_MASK |
+                   IBUS_SUPER_MASK |
+Index: ibus-libzhuyin-1.10.0/src/ZYFallbackEditor.cc
+===================================================================
+--- ibus-libzhuyin-1.10.0.orig/src/ZYFallbackEditor.cc
++++ ibus-libzhuyin-1.10.0/src/ZYFallbackEditor.cc
+@@ -63,6 +63,9 @@ FallbackEditor::processKeyEvent (guint k
+ {
+     gboolean retval = FALSE;
+ 
++    if (modifiers & IBUS_MOD4_MASK)
++        return FALSE;
++
+     modifiers &= (IBUS_CONTROL_MASK |
+                   IBUS_MOD1_MASK |
+                   IBUS_SUPER_MASK |
+Index: ibus-libzhuyin-1.10.0/src/ZYZPinyinEditor.cc
+===================================================================
+--- ibus-libzhuyin-1.10.0.orig/src/ZYZPinyinEditor.cc
++++ ibus-libzhuyin-1.10.0/src/ZYZPinyinEditor.cc
+@@ -244,6 +244,9 @@ PinyinEditor::processSpace (guint keyval
+ gboolean
+ PinyinEditor::processKeyEvent (guint keyval, guint keycode, guint modifiers)
+ {
++    if (modifiers & IBUS_MOD4_MASK)
++        return FALSE;
++
+     modifiers &= (IBUS_SHIFT_MASK |
+                   IBUS_CONTROL_MASK |
+                   IBUS_MOD1_MASK |
+Index: ibus-libzhuyin-1.10.0/src/ZYZZhuyinEditor.cc
+===================================================================
+--- ibus-libzhuyin-1.10.0.orig/src/ZYZZhuyinEditor.cc
++++ ibus-libzhuyin-1.10.0/src/ZYZZhuyinEditor.cc
+@@ -286,6 +286,9 @@ ZhuyinEditor::processSpace (guint keyval
+ gboolean
+ ZhuyinEditor::processKeyEvent (guint keyval, guint keycode, guint modifiers)
+ {
++    if (modifiers & IBUS_MOD4_MASK)
++        return FALSE;
++
+     modifiers &= (IBUS_SHIFT_MASK |
+                   IBUS_CONTROL_MASK |
+                   IBUS_MOD1_MASK |
+Index: ibus-libzhuyin-1.10.0/src/ZYZZhuyinEngine.cc
+===================================================================
+--- ibus-libzhuyin-1.10.0.orig/src/ZYZZhuyinEngine.cc
++++ ibus-libzhuyin-1.10.0/src/ZYZZhuyinEngine.cc
+@@ -115,7 +115,7 @@ ZhuyinEngine::processKeyEvent (guint key
+ 
+             /* after mode switch, reset all states. */
+             reset ();
+-            return TRUE;
++            return FALSE;
+         }
+ 
+         if (m_input_mode == MODE_INIT &&
+@@ -124,7 +124,7 @@ ZhuyinEngine::processKeyEvent (guint key
+              * we will let client applications to handle release key event */
+             return FALSE;
+         } else {
+-            return TRUE;
++            return FALSE;
+         }
+     }
+ 
